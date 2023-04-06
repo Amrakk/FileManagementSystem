@@ -1,9 +1,13 @@
 <!-- WELCOME PAGE -->
 
 <?php
+    
+    require_once '../src/Controller/Repo.php';
 
-    require_once '../vendor/autoload.php';
-    require_once '../src/Routes/api.php';
+    use System\Controller\RepoController;
+    
+
+    $repo = new RepoController();
 
     // require_once './includes/header.php';
     
