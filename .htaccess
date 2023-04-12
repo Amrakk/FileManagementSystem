@@ -1,0 +1,32 @@
+RewriteEngine On
+RewriteBase /FMS/
+
+# Redirect requests to directory to index.php
+RewriteRule ^$ public/pages/ [L]
+
+# Redirect requests to home.php when user enters /FMS/Home
+RewriteRule ^Home$ public/pages/home.php [L]
+
+# Remove .php extension from URLs
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Rewrite requests to files that exist in public/pages folder
+RewriteCond %{DOCUMENT_ROOT}/FMS/public/pages/$1.php -f
+RewriteRule ^(.+)$ public/pages/$1.php [L]
+
+# Rewrite requests to files that exist in public/folder1 folder
+RewriteCond %{DOCUMENT_ROOT}/FMS/public/folder1/$1.php -f
+RewriteRule ^folder1/(.+)$ public/folder1/$1.php [L]
+
+# Rewrite requests to files that exist in public/folder2 folder
+RewriteCond %{DOCUMENT_ROOT}/FMS/public/folder2/$1.php -f
+RewriteRule ^folder2/(.+)$ public/folder2/$1.php [L]
+
+# Redirect requests to directory to index.php 
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.+)$ public/pages/index.php [L]
+
+
+# Redirect to 404 page when page is not found
+ErrorDocument 404 /FMS/public/pages/404.php
