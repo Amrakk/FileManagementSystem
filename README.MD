@@ -1,0 +1,1 @@
+Check for .htaccess and .env.example

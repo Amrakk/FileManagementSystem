@@ -1,5 +1,7 @@
 RewriteEngine On
-RewriteBase /FMS/
+# Change the RewriteBase to the path of your site
+<!-- RewriteBase / -->      # Uncomment this line and comment the line below
+RewriteBase /FMS/           # if your root is htdocs. Or change the 'FMS' into the name of folder you're working on
 
 # Redirect requests to directory to index.php
 RewriteRule ^$ public/pages/ [L]

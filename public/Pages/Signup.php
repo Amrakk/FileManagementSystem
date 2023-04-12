@@ -1,6 +1,0 @@
-<!-- SIGNUP PAGE
-
-    functions:
-    -   signup
-
--->
