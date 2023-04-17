@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Controller;
+namespace App\Controllers\Api\Auth;
 
 class VerifyController {
 

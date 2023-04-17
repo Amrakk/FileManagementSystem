@@ -8,7 +8,20 @@
 -->
 
 <?php
-    
+    session_start();
+
+    if (isset($_SESSION['user'])) {
+        
+        // header_remove("location: index.php");
+        // header("location: localhost/Home");
+        exit();
+    }
+
+    $error = '';
+    $user = $_POST['user'] ?? '';
+    $pass = $_POSt['pass'] ?? '';
+
+    $_SESSION['user'] = $user;
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +37,7 @@
 </head>
 <body>
 <!-- Import header -->
-<?php require_once('../includes/header.php'); ?>
+<?php // require_once('../includes/header.php'); ?>
 
 
 <div class="container">
@@ -64,6 +77,6 @@
 </div>
 
 <!-- Import footer -->
-<?php require_once('../includes/footer.php'); ?>
+<?php // require_once('../includes/footer.php'); ?>
 </body>
 </html>

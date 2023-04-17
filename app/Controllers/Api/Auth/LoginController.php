@@ -1,8 +1,10 @@
 <?php
 
-namespace System\Controller;
+namespace App\Controllers\Api\Auth;
 
-class RepoController {
+
+
+class LoginController {
 
     public function __construct()
     {
