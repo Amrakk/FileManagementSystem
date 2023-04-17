@@ -9,7 +9,13 @@
 
         public function getAccountByUserName($username) {
             $conn = new Database();
-            $data = $conn->selectQuery("SELECT * FROM accounts WHERE username = ?", [$username]);
+            $query = "SELECT * FROM accounts WHERE username = :username";
+            $params = [
+                'username' => $username
+            ];
+
+            
+            $data = $conn->selectQuery($query, $params);
             return $data;
         }
     }
