@@ -11,9 +11,7 @@
     session_start();
 
     if (isset($_SESSION['user'])) {
-        
-        // header_remove("location: index.php");
-        // header("location: localhost/Home");
+        header("location: http:/Home");
         exit();
     }
 

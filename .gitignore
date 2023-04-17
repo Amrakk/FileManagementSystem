@@ -1,6 +1,6 @@
-.*
-!.gitignore
-!.env.example
-!.htaccess
+# .*
+# !.gitignore
+# !.env.example
+# !.htaccess
 
-/vendor/
+# /vendor/

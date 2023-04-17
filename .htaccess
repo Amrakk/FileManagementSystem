@@ -5,9 +5,10 @@ RewriteEngine On
 RewriteBase /
 
 # Redirect requests to index.php in app folder when user enters /api
+
 RewriteRule ^api(/.+)?$ app/index.php [L]
 
-# Redirect requests to directory to index.php
+# Redirect requests to index.php as default
 
 RewriteRule ^$ public/pages/ [L]
 
@@ -15,7 +16,7 @@ RewriteRule ^$ public/pages/ [L]
 
 RewriteRule ^Home$ public/pages/home.php [L]
 
-# Remove .php extension from URLs
+# Remove .php extension from URLs (public only)
 
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.\*)$ $1.php [L]
@@ -27,4 +28,4 @@ RewriteRule ^(.+)$ public/pages/$1.php [L]
 
 # Redirect to 404 page when page is not found
 
-ErrorDocument 404 /FMS/public/pages/404.php
+ErrorDocument 404 /public/pages/error/404.php
