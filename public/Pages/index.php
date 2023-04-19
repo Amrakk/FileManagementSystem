@@ -12,5 +12,3 @@
     // require_once './includes/header.php';
     
 ?>
-
-<h3>tmp</h3>

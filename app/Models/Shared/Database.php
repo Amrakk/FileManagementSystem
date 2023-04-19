@@ -1,8 +1,7 @@
 <?php
     namespace App\Models\Shared;
-    use App\Models\Shared\AppConfig;
-  
 
+    use App\Models\Shared\AppConfig;
 
     class Database {
         private $dbConnection = null;
@@ -10,10 +9,10 @@
         public function __construct()
         {
             
-            $host = AppConfig::get('DB_HOST', '');
-            $port = AppConfig::get('DB_PORT', '');
-            $db   = AppConfig::get('DB_DATABASE', '');
-            $user = AppConfig::get('DB_USERNAME', '');
+            $host = AppConfig::get('DB_HOST', 'localhost');
+            $port = AppConfig::get('DB_PORT', '3306');
+            $db   = AppConfig::get('DB_DATABASE', 'cloudstorage');
+            $user = AppConfig::get('DB_USERNAME', 'root');
             $pass = AppConfig::get('DB_PASSWORD', '');
 
             try {
@@ -40,4 +39,5 @@
         }
 
     }
+
 ?>

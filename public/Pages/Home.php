@@ -54,7 +54,7 @@
                <h3>File Manager</h3>
             </div>
             <div class="col-6">
-               <h5 class="text-right">Xin chào User, <a class="text-primary" href="#">Logout</a></h5>
+               <h5 class="text-right">Xin chào User, <a class="text-primary" href="http://localhost/auth/login">Logout</a></h5>
             </div>
          </div>
          <ol class="breadcrumb">
