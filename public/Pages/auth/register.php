@@ -6,6 +6,47 @@
 -->
 
 <?php
+    session_start();
+    require_once '../functions.php';
+
+    if(isset($_SESSION['user'])) {
+        header('Location: http:/Home');
+        exit();
+    }
+    
+    $error = '';
+    $first_name = $_POST['first_name'] ?? '';
+    $last_name = $_POST['last_name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $user = $_POST['user'] ?? '';
+    $pass = $_POST['pass'] ?? '';
+    $pass_confirm = $_POST['pass_confirm'] ?? '';
+
+    if(!empty($first_name) && !empty($last_name) && !empty($email) && !empty($user) && !empty($pass) && !empty($pass_confirm)) {
+        $url = 'http://localhost/api/auth/register';
+        $data = array(
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'email' => $email,
+            'username' => $user,
+            'password' => $pass,
+            'password_confirm' => $pass_confirm
+        );
+
+        $response = callApi($url, $data, 'POST');
+
+        if(isset($response['code']) || $response['code'] == 10) {
+            if($response['code'] == 0) {
+                $_SESSION['user'] = $user;
+                header('Location: http://localhost/Home');
+                exit();
+            }
+            else $error = $response['message'];
+
+        } else {
+            $error = "There was an error while processing your request. Please try again later";
+        }
+    }
 
 ?>
 <!DOCTYPE html>
@@ -26,6 +67,8 @@
     </style>
 </head>
 <body>
+<?php require_once('../../includes/header.php'); ?>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-5 col-lg-6 col-md-8 border my-5 p-4 rounded mx-3">

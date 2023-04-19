@@ -1,16 +1,22 @@
 <?php
 
-namespace App\Controllers\Api\Auth;
+    namespace App\Controllers\Api\Auth;
+    
+    use App\Models\Auth\Account;
 
+    class LoginController {
 
+        public static function verify($username, $password) {
+            $result = Account::getAccountByUserName($username);
 
-class LoginController {
+            if($result == null) {
+                return json_encode(array('code' => 1, 'message' => 'Wrong username or password'));
+            }
 
-    public function __construct()
-    {
-        echo "login";
+            if(!password_verify($password, $result->getPassword())) 
+                return json_encode(array('code' => 2, 'message' => 'Wrong username or password'));
+
+            return json_encode(array('code' => 0, 'message' => 'Login successful'));
+        }
     }
-
-}
-
 ?>

@@ -2,7 +2,6 @@
 
 <?php
     
-    // require_once '../src/Controller/Repo.php';
 
     // use System\Controller\RepoController;
     
@@ -13,4 +12,5 @@
     
 ?>
 
-<h3>tmp</h3>
+<?php require_once('../includes/header.php'); ?>
+
