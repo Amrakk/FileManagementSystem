@@ -14,47 +14,46 @@
 
 
 -->
+<?php
+	session_start();
+	if (!isset($_SESSION['user'])) {
+		header("location: http://localhost");
+		exit();
+	}
+
+	$user = $_SESSION['user'];
+
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
    <head>
-      <title>Bootstrap Example</title>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-      <link 
-         rel="stylesheet"
-         href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-         integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <style>
-         .fa, .fas {
-         color: #858585;
-         }
-         .fa-folder {
-         color: rgb(74, 158, 255);
-         }
-         i.fa, table i.fas {
-         font-size: 16px;
-         margin-right: 6px;
-         }
-         i.action {
-         cursor: pointer;
-         }
-         a {
-         color: black;
-         }
-      </style>
+      	<title>Bootstrap Example</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<link 
+			rel="stylesheet"
+			href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+			integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+		<link rel="stylesheet" href="public/assets/css/home.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+   
    </head>
    <body>
+   <?php require_once('../includes/header.php'); ?>
+
       <div class="container">
          <div class="row align-items-center py-5">
             <div class="col-6">
                <h3>File Manager</h3>
             </div>
             <div class="col-6">
-               <h5 class="text-right">Xin chào User, <a class="text-primary" href="http://localhost/auth/login">Logout</a></h5>
+               <h5 class="text-right">Xin chào <?= $user ?>, <a class="text-primary" href="auth/logout">Logout</a></h5>
             </div>
          </div>
          <ol class="breadcrumb">
@@ -302,6 +301,6 @@
             </div>
             </div>
 
-
+   <script src="public/assets/js/home.js"></script>
    </body>
 </html>

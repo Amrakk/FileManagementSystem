@@ -2,17 +2,14 @@
     require_once '../functions.php';
     session_start();
 
-    // if (isset($_SESSION['user'])) {
-    //     header("location: http:/Home");
-    //     exit();
-    // }
+    if (isset($_SESSION['user'])) {
+        header("location: http:/Home");
+        exit();
+    }
 
     $error = '';
-    $user = $_POST['user'] ?? '';
-    $pass = $_POST['pass'] ?? '';
-
-    $user = trim($user);
-    $pass = trim($pass);
+    $user = '';
+    $pass = '';
 
     if (isset($_POST['user']) && isset($_POST['pass'])) {
         $user = trim($_POST['user']);
@@ -30,15 +27,18 @@
             $url = 'http://localhost/api/auth/login';
             
             $response = callApi($url, $data, "POST");
+            
+            if(isset($response['code']) || $response['code'] == 10) {
+                if($response['code'] == 0) {
+                    $_SESSION['user'] = $user;
+                    header('Location: http://localhost/Home');
+                    exit();
+                }
+                else $error = $response['message'];
 
-            if($response['code'] == 0) {
-                $_SESSION['user'] = $user;
-                header('Location: http://localhost/Home');
-                exit();
             } else {
-                $error = $response['message'];
+                $error = "There was an error while processing your request. Please try again later";
             }
-            print_r($response);
         }
     }
 ?>
@@ -50,14 +50,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../assets/css/auth/login.css">
+    <link rel="stylesheet" href="http://localhost/public/assets/css/auth/login.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-<!-- Import header -->
-<?php // require_once('../includes/header.php'); ?>
+<?php require_once('../../includes/header.php'); ?>
+
 
 
 <div class="container">

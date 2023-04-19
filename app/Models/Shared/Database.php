@@ -24,20 +24,27 @@
 
         public function selectQuery($query, $params = [])
         {
-            $stmt = $this->dbConnection->prepare($query);
-            $stmt->execute($params);
-            
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            try {
+                $stmt = $this->dbConnection->prepare($query);
+                $stmt->execute($params);
+                
+                return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            } catch (\PDOException $e) {
+                exit($e->getMessage());
+            }
         }
 
         public function actionQuery($query, $params = [])
         {
-            $stmt = $this->dbConnection->prepare($query);
-            $stmt->execute($params);
+            try {
+                $stmt = $this->dbConnection->prepare($query);
+                $stmt->execute($params);
 
-            return $stmt->rowCount();
+                return $stmt->rowCount();
+            } catch (\PDOException $e) {
+                exit($e->getMessage());
+            }
         }
-
     }
 
 ?>
