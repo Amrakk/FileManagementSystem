@@ -36,40 +36,6 @@
                                $data['created_date'], $data['is_activated'], $data['activate_token']);
         }
 
-        public function insertAccount()
-        {
-            $conn = new Database();
-            $query = "INSERT INTO account (id, username, password, created_date, activate_token)
-                      VALUES (:id, :username, :password, :created_date, :activate_token)";
-            $params = [
-                'id' => $this->id,
-                'username' => $this->username,
-                'password' => $this->password,
-                'created_date' => $this->created_date,
-                'activate_token' => $this->activate_token
-            ];
-            $data = $conn->actionQuery($query, $params);
-            return ($data == 0) ? false : true;
-        }
-
-        public function updateAccountByUserID()
-        {
-            $conn = new Database();
-            $query = "UPDATE account SET username = :username, password = :password, created_date = :created_date, 
-                      is_activated = :is_activated activate_token = :activate_token WHERE id = :id";
-
-            $params = [
-                'id' => $this->id,
-                'username' => $this->username,
-                'password' => $this->password,
-                'created_date' => $this->created_date,
-                'is_activated' => $this->is_activated,
-                'activate_token' => $this->activate_token
-            ];
-            $data = $conn->actionQuery($query, $params);
-            return ($data == 0) ? false : true;
-        }
-
         public static function deleteAccount($id)
         {
             $conn = new Database();
@@ -121,6 +87,40 @@
             return true;
         }
     
+        public function insertAccount()
+        {
+            $conn = new Database();
+            $query = "INSERT INTO account (id, username, password, created_date, activate_token)
+                      VALUES (:id, :username, :password, :created_date, :activate_token)";
+            $params = [
+                'id' => $this->id,
+                'username' => $this->username,
+                'password' => $this->password,
+                'created_date' => $this->created_date,
+                'activate_token' => $this->activate_token
+            ];
+            $data = $conn->actionQuery($query, $params);
+            return ($data == 0) ? false : true;
+        }
+
+        public function updateAccount()
+        {
+            $conn = new Database();
+            $query = "UPDATE account SET username = :username, password = :password, created_date = :created_date, 
+                      is_activated = :is_activated activate_token = :activate_token WHERE id = :id";
+
+            $params = [
+                'id' => $this->id,
+                'username' => $this->username,
+                'password' => $this->password,
+                'created_date' => $this->created_date,
+                'is_activated' => $this->is_activated,
+                'activate_token' => $this->activate_token
+            ];
+            $data = $conn->actionQuery($query, $params);
+            return ($data == 0) ? false : true;
+        }
+
         public function getId() {
             return $this->id;
         }

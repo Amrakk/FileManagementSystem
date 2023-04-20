@@ -7,12 +7,12 @@
 
 <?php
     session_start();
-    require_once '../../functions.php';
-
-    if(isset($_SESSION['user'])) {
+    if(isset($_SESSION['user_id'])) {
         header('Location: http:/Home');
         exit();
     }
+
+    require_once '../../functions.php';
     
     $error = '';
     $first_name = $_POST['first_name'] ?? '';
@@ -35,10 +35,9 @@
         );
         $response = callApi($url, $data, 'POST');
 
-        if(isset($response['code']) || $response['code'] == 10) {
+        if(isset($response['code']) || $response['code'] >= 10) {
             if($response['code'] == 0) {
-                $_SESSION['user'] = $user;
-                $_SESSION['id'] = $response['data']['id'];
+                $_SESSION['user_id'] = $response['data']['id'];
                 header('Location: http://localhost/Home');
                 exit();
             }
@@ -61,6 +60,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    
     <style>
         .bg {
             background: #eceb7b;
@@ -78,40 +78,37 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="first_name">First name</label>
-                            <input value="<?= $first_name?>" name="first_name" required class="form-control" type="text" placeholder="First name" id="first_name">
+                            <input oninput="validateInput()" value="<?= $first_name?>" name="first_name" required class="form-control" type="text" placeholder="First name" id="first_name">
                         </div>
                         <div class="form-group col-md-6">
                             <label for="last_name">Last name</label>
-                            <input value="<?= $last_name?>" name="last_name" required class="form-control" type="text" placeholder="Last name" id="last_name">
-                            <div class="invalid-tooltip">Last name is required</div>
+                            <input oninput="validateInput()" value="<?= $last_name?>" name="last_name" required class="form-control" type="text" placeholder="Last name" id="last_name">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input value="<?= $email?>" name="email" required class="form-control" type="email" placeholder="Email" id="email">
+                        <input oninput="validateInput()" value="<?= $email?>" name="email" required class="form-control" type="email" placeholder="Email" id="email">
                     </div>
                     <div class="form-group">
                         <label for="user">Username</label>
-                        <input value="<?= $user?>" name="user" required class="form-control" type="text" placeholder="Username" id="user">
-                        <div class="invalid-feedback">Please enter your username</div>
+                        <input oninput="validateInput()" value="<?= $user?>" name="user" required class="form-control" type="text" placeholder="Username" id="user">
                     </div>
                     <div class="form-group">
                         <label for="pass">Password</label>
-                        <input  value="<?= $pass?>" name="pass" required class="form-control" type="password" placeholder="Password" id="pass">
-                        <div class="invalid-feedback">Password is not valid.</div>
+                        <input oninput="validateInput()" value="<?= $pass?>" name="pass" required class="form-control" type="password" placeholder="Password" id="pass">
                     </div>
                     <div class="form-group">
                         <label for="pass_confirm">Confirm Password</label>
-                        <input value="<?= $pass_confirm?>" name="pass_confirm" required class="form-control" type="password" placeholder="Confirm Password" id="pass_confirm">
-                        <div class="invalid-feedback">Password is not valid.</div>
+                        <input oninput="validateInput()" value="<?= $pass_confirm?>" name="pass_confirm" required class="form-control" type="password" placeholder="Confirm Password" id="pass_confirm">
                     </div>
 
                     <div class="form-group">
                         <?php
                             if (!empty($error)) {
-                                echo "<div class='alert alert-danger'>$error</div>";
+                                echo "<div class='alert alert-danger' id='message'>$error</div>";
                             }
                         ?>
+                        <div id="message"></div>
                         <button type="submit" class="btn btn-success px-5 mt-3 mr-2">Register</button>
                         <button type="reset" class="btn btn-outline-success px-5 mt-3">Reset</button>
                     </div>
@@ -124,6 +121,8 @@
         </div>
 
     </div>
+
+    <script src="http://localhost/public/assets/js/auth/register.js"></script>
 </body>
 </html>
 

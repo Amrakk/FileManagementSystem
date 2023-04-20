@@ -30,7 +30,7 @@
                 curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
                 break;
             default:
-                return json_encode(array('code' => 10, 'error' => 'Unsupported method'));
+                return json_encode(array('code' => 20, 'error' => 'Unsupported method'));
         }
 
         $response = curl_exec($curl);
@@ -46,7 +46,7 @@
 
     function get($key, $default = null)
     {
-        $app_config = require_once('../config.php');
+        $app_config = require_once('../../config.php');
 
         return !empty($app_config[$key]) ? $app_config[$key] : $default;
     }
