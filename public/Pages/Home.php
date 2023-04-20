@@ -15,13 +15,24 @@
 
 -->
 <?php
+   require_once '../functions.php';
 	session_start();
-	if (!isset($_SESSION['user'])) {
+
+	if (!isset($_SESSION['user']) || !isset($_SESSION['id'])) {
 		header("location: http://localhost");
 		exit();
 	}
+   
+   // $error = '';
+   // $dir = $_GET['dir'] ?? '';
+	// $user = $_SESSION['user'];
+   // $user_id = $_SESSION['id'];
+   // $storage_root_path = get('STORAGE_PATH') .  '/' . $user_id;
 
-	$user = $_SESSION['user'];
+   // if (!file_exists($storage_root_path)) {
+   //    mkdir($storage_root_path, 0777, true);
+   // }
+
 
 
 

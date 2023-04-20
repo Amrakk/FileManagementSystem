@@ -44,5 +44,12 @@
         return $data;
     }
 
+    function get($key, $default = null)
+    {
+        $app_config = require_once('../config.php');
+
+        return !empty($app_config[$key]) ? $app_config[$key] : $default;
+    }
+
 ?>
 

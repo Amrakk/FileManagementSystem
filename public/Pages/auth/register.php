@@ -7,7 +7,7 @@
 
 <?php
     session_start();
-    require_once '../functions.php';
+    require_once '../../functions.php';
 
     if(isset($_SESSION['user'])) {
         header('Location: http:/Home');
@@ -22,6 +22,7 @@
     $pass = $_POST['pass'] ?? '';
     $pass_confirm = $_POST['pass_confirm'] ?? '';
 
+   
     if(!empty($first_name) && !empty($last_name) && !empty($email) && !empty($user) && !empty($pass) && !empty($pass_confirm)) {
         $url = 'http://localhost/api/auth/register';
         $data = array(
@@ -32,12 +33,12 @@
             'password' => $pass,
             'password_confirm' => $pass_confirm
         );
-
         $response = callApi($url, $data, 'POST');
 
         if(isset($response['code']) || $response['code'] == 10) {
             if($response['code'] == 0) {
                 $_SESSION['user'] = $user;
+                $_SESSION['id'] = $response['data']['id'];
                 header('Location: http://localhost/Home');
                 exit();
             }
@@ -76,12 +77,12 @@
                 <form method="post" action="" novalidate>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="firstname">First name</label>
-                            <input value="<?= $first_name?>" name="first" required class="form-control" type="text" placeholder="First name" id="firstname">
+                            <label for="first_name">First name</label>
+                            <input value="<?= $first_name?>" name="first_name" required class="form-control" type="text" placeholder="First name" id="first_name">
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="lastname">Last name</label>
-                            <input value="<?= $last_name?>" name="last" required class="form-control" type="text" placeholder="Last name" id="lastname">
+                            <label for="last_name">Last name</label>
+                            <input value="<?= $last_name?>" name="last_name" required class="form-control" type="text" placeholder="Last name" id="last_name">
                             <div class="invalid-tooltip">Last name is required</div>
                         </div>
                     </div>
@@ -100,8 +101,8 @@
                         <div class="invalid-feedback">Password is not valid.</div>
                     </div>
                     <div class="form-group">
-                        <label for="pass2">Confirm Password</label>
-                        <input value="<?= $pass_confirm?>" name="pass-confirm" required class="form-control" type="password" placeholder="Confirm Password" id="pass2">
+                        <label for="pass_confirm">Confirm Password</label>
+                        <input value="<?= $pass_confirm?>" name="pass_confirm" required class="form-control" type="password" placeholder="Confirm Password" id="pass_confirm">
                         <div class="invalid-feedback">Password is not valid.</div>
                     </div>
 

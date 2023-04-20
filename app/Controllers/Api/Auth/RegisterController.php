@@ -2,6 +2,7 @@
 
     namespace App\Controllers\Api\Auth;
     
+    use app\Models\Shared\AppConfig;
     use App\Models\Auth\Account;
     use App\Models\Auth\Profile;
 
@@ -26,7 +27,10 @@
                 if(!Account::deleteAccount($id)) return json_encode(array("code" => 11,"message" => "Signup failed"));
                 return json_encode(array("code" => 10,"message" => "Signup failed"));
             }
-            return json_encode(array("code" => 0,"message" => "Signup success"));
+
+
+            mkdir(AppConfig::get('STORAGE_PATH') . '/' . $id);
+            return json_encode(array("code" => 0,"message" => "Signup success", "data" => array("id" => $id)));
         }
     }
 ?>
