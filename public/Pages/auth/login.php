@@ -1,12 +1,12 @@
 <?php
-    require_once '../functions.php';
     session_start();
-
-    if (isset($_SESSION['user'])) {
+    if (isset($_SESSION['user_id'])) {
         header("location: http:/Home");
         exit();
     }
-
+        
+    require_once '../../functions.php';
+    
     $error = '';
     $user = '';
     $pass = '';
@@ -28,10 +28,10 @@
             
             $response = callApi($url, $data, "POST");
             
-            if(isset($response['code']) || $response['code'] == 10) {
+            if(isset($response['code']) || $response['code'] >= 10) {
                 if($response['code'] == 0) {
-                    $_SESSION['user'] = $user;
-                    header('Location: http://localhost/Home');
+                    $_SESSION['user_id'] = $response['data']['id'];
+                    header('Location: http://localhost/Home/user');
                     exit();
                 }
                 else $error = $response['message'];

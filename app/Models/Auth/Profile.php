@@ -37,7 +37,7 @@
             return $profiles;
         }
 
-        public static function getProfileByID($id)
+        public static function getProfile($id)
         {
             $conn = new Database();
             $query = "SELECT * FROM profile WHERE id = :id";
@@ -45,7 +45,7 @@
                 'id' => $id
             ];
 
-            $data = $conn->selectQuery($query, $params);
+            $data = $conn->selectQuery($query, $params)[0] ?? null;
             if(empty($data)) return null;
 
             $profile = new Profile($data['id'], $data['name'], $data['email'], $data['phone_number'], $data['role']);
@@ -68,7 +68,7 @@
             return ($data == 0) ? false : true;
         }
         
-        public function updateProfileByUserID()
+        public function updateProfile()
         {
             $conn = new Database();
             $query = "UPDATE profile SET name = :name, email = :email, phone = :phone, role = :role WHERE id = :id";
