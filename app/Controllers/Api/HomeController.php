@@ -8,7 +8,7 @@
     class HomeController {
         
         public static function getProfile($id) {
-            $result = Profile::getProfile($id);
+            $result = Profile::getProfileByID($id);
             if($result == null) return json_encode(array('code' => 1, 'message' => 'Profile not found'));
 
             $data = array('code' => 0, 'message' => 'Profile found', 

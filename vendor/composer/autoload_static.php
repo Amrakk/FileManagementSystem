@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit933f51648ce5506fa61356b97959baff
 {
     public static $prefixLengthsPsr4 = array (
+        'P' => 
+        array (
+            'PHPMailer\\PHPMailer\\' => 20,
+        ),
         'A' => 
         array (
             'App\\' => 4,
@@ -14,6 +18,10 @@ class ComposerStaticInit933f51648ce5506fa61356b97959baff
     );
 
     public static $prefixDirsPsr4 = array (
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
@@ -24,12 +32,23 @@ class ComposerStaticInit933f51648ce5506fa61356b97959baff
         'App\\Controllers\\Api\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Controllers/Api/Auth/LoginController.php',
         'App\\Controllers\\Api\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Controllers/Api/Auth/RegisterController.php',
         'App\\Controllers\\Api\\HomeController' => __DIR__ . '/../..' . '/app/Controllers/Api/HomeController.php',
-        'App\\Controllers\\Api\\Storage\\RepoController' => __DIR__ . '/../..' . '/app/Controllers/Api/Storage/RepoController.php',
+        'App\\Controllers\\Api\\Storage\\StorageController' => __DIR__ . '/../..' . '/app/Controllers/Api/Storage/StorageController.php',
         'App\\Models\\Auth\\Account' => __DIR__ . '/../..' . '/app/Models/Auth/Account.php',
         'App\\Models\\Auth\\Profile' => __DIR__ . '/../..' . '/app/Models/Auth/Profile.php',
+        'App\\Models\\Auth\\ResetToken' => __DIR__ . '/../..' . '/app/Models/Auth/ResetToken.php',
         'App\\Models\\Shared\\AppConfig' => __DIR__ . '/../..' . '/app/Models/Shared/AppConfig.php',
         'App\\Models\\Shared\\Database' => __DIR__ . '/../..' . '/app/Models/Shared/Database.php',
+        'App\\Models\\Storage\\File' => __DIR__ . '/../..' . '/app/Models/Storage/File.php',
+        'App\\Models\\Storage\\FileFolderManager' => __DIR__ . '/../..' . '/app/Models/Storage/FileFolderManager.php',
+        'App\\Models\\Storage\\Folder' => __DIR__ . '/../..' . '/app/Models/Storage/Folder.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'PHPMailer\\PHPMailer\\DSNConfigurator' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/DSNConfigurator.php',
+        'PHPMailer\\PHPMailer\\Exception' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/Exception.php',
+        'PHPMailer\\PHPMailer\\OAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuth.php',
+        'PHPMailer\\PHPMailer\\OAuthTokenProvider' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/OAuthTokenProvider.php',
+        'PHPMailer\\PHPMailer\\PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/PHPMailer.php',
+        'PHPMailer\\PHPMailer\\POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/POP3.php',
+        'PHPMailer\\PHPMailer\\SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/src/SMTP.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

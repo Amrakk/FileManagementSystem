@@ -3,7 +3,8 @@
 
     use App\Models\Shared\Database;
 
-    class Account {
+    class Account 
+    {
         private $id;
         private $username;
         private $password;
@@ -28,6 +29,20 @@
             $query = "SELECT * FROM account WHERE username = :username";
             $params = [
                 'username' => $username
+            ];
+            $data = $conn->selectQuery($query, $params)[0] ?? null;
+            if(empty($data)) return null;
+            
+            return new Account($data['id'], $data['username'], $data['password'], 
+                               $data['created_date'], $data['is_activated'], $data['activate_token']);
+        }
+
+        public static function getAccountByID($id)
+        {
+            $conn = new Database();
+            $query = "SELECT * FROM account WHERE id = :id";
+            $params = [
+                'id' => $id
             ];
             $data = $conn->selectQuery($query, $params)[0] ?? null;
             if(empty($data)) return null;
@@ -107,7 +122,7 @@
         {
             $conn = new Database();
             $query = "UPDATE account SET username = :username, password = :password, created_date = :created_date, 
-                      is_activated = :is_activated activate_token = :activate_token WHERE id = :id";
+                      is_activated = :is_activated, activate_token = :activate_token WHERE id = :id";
 
             $params = [
                 'id' => $this->id,
@@ -121,43 +136,27 @@
             return ($data == 0) ? false : true;
         }
 
-        public function getId() {
-            return $this->id;
-        }
+        public function getId() { return $this->id; }
+        public function getUsername() { return $this->username; }
+        public function getPassword() { return $this->password; }
+        public function getCreated_date() { return $this->created_date; }
+        public function getIs_activated() { return $this->is_activated; }
+        public function getActivate_token() { return $this->activate_token; }
         
-        public function getUsername() {
-            return $this->username;
-        }
-        
+
         public function setUsername($username): self {
             $this->username = $username;
             return $this;
         }
-        
-        public function getPassword() {
-            return $this->password;
-        }
-        
+
         public function setPassword($password): self {
             $this->password = $password;
             return $this;
         }
         
-        public function getCreated_date() {
-            return $this->created_date;
-        }
-        
-        public function getIs_activated() {
-            return $this->is_activated;
-        }
-        
         public function setIs_activated($is_activated): self {
             $this->is_activated = $is_activated;
             return $this;
-        }
-        
-        public function getActivate_token() {
-            return $this->activate_token;
         }
         
         public function setActivate_token($activate_token): self {

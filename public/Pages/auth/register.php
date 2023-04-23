@@ -35,10 +35,9 @@
         );
         $response = callApi($url, $data, 'POST');
 
-        if(isset($response['code']) || $response['code'] >= 10) {
+        if(isset($response['code']) && $response['code'] < 10) {
             if($response['code'] == 0) {
-                $_SESSION['user_id'] = $response['data']['id'];
-                header('Location: http://localhost/Home');
+                header('Location: http://localhost/auth/login');
                 exit();
             }
             else $error = $response['message'];
