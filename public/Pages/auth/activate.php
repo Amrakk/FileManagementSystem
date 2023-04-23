@@ -32,7 +32,7 @@
 <html lang="en">
 
 <head>
-    <title>Kích hoạt tài khoản</title>
+    <title>Activate Account</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
@@ -46,7 +46,7 @@
   <div class="container">
     <div class="row">
         <?php
-            if($response['code'] == 0) {
+            if(empty($error)) {
         ?>
                     <div class="col-md-6 mt-5 mx-auto p-3 border rounded">
                         <h4>Account Activation</h4>

@@ -30,7 +30,9 @@
                 return json_encode(array("code" => 10,"message" => "Add profile failed"));
             }
 
-            mkdir(AppConfig::get('STORAGE_PATH') . '/' . $id);
+            if(!file_exists(AppConfig::get('STORAGE_PATH') . '/' . $id))
+                mkdir(AppConfig::get('STORAGE_PATH') . '/' . $id);
+                
             if(self::sendActivationMail($email,$activateToken))
                 return json_encode(array("code" => 0,"message" => "Signup success", "data" => array("id" => $id)));
             else return json_encode(array("code" => 12,"message" => "Something went wrong"));

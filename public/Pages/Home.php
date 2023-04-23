@@ -111,7 +111,7 @@
 				<i class="fas fa-folder-plus"></i> New folder
 				</button>   
 				<button type="button" class="btn btn-light border" data-toggle="modal" data-target="#new-file-dialog">
-					<i class="fas fa-file"></i> Create text file
+					<i class="fas fa-file"></i> New file
 					</button>  
 			</div>
 			<table class="table table-hover border">
@@ -251,12 +251,11 @@
 		</div>
 		</div>
 
-
 		<!-- New file dialog -->
 		<div class="modal fade" id="new-file-dialog">
 		<div class="modal-dialog">
 		<div class="modal-content">
-			<form action="" method="post">
+			<form id="new-file-form" method="post">
 				<div class="modal-header">
 					<h4 class="modal-title">Create new file</h4>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -269,15 +268,14 @@
 					</div>
 					<div class="form-group">
 						<label for="content">Contents</label>
-						<textarea name="contents" rows="10" id="contents" class="form-control" placeholder="Contents"></textarea>
+						<textarea name="contents" rows="10" id="file-contents" class="form-control" placeholder="Contents"></textarea>
 
 					</div>
 				</div>
 			
 				<div class="modal-footer">
-					<input type="hidden" name="action" value="create-file"></input>
-					<input type="hidden" name="path" value="<?= $dir ?>"></input>
-					<button type="button" class="btn btn-success" id="create-file-btn">Save</button>
+					
+					<button type="submit" class="btn btn-success" id="create-file-btn">Save</button>
 				</div>    
 			</form>  
 		</div>

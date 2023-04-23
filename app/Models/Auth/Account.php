@@ -122,7 +122,7 @@
         {
             $conn = new Database();
             $query = "UPDATE account SET username = :username, password = :password, created_date = :created_date, 
-                      is_activated = :is_activated activate_token = :activate_token WHERE id = :id";
+                      is_activated = :is_activated, activate_token = :activate_token WHERE id = :id";
 
             $params = [
                 'id' => $this->id,

@@ -85,6 +85,19 @@
             if (!file_exists($folder_path)) {
                 return mkdir($folder_path);
             }
+            return false;
+        }
+
+        public static function createFile($path, $file_name, $content)
+        {
+            $file_path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $file_name;
+            if (!file_exists($file_path)) {
+                $file = fopen($file_path, 'w');
+                fwrite($file, $content);
+                fclose($file);
+                return true;
+            }
+            return false;
         }
 
         

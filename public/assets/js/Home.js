@@ -7,6 +7,14 @@ $(document).ready(function() {
             location.reload();
         });
     });
+
+    $('#create-file-btn').click(function() {
+        createNewFile();
+        $('#message-dialog').on('hidden.bs.modal', function () {
+            // location.reload();
+        });
+    });
+
 });
 
 
@@ -16,13 +24,11 @@ function createNewFolder() {
     title = "Create Folder";
     fetch('http://localhost/api/storage/create_folder', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-                folder_name: $('#folder-name').val(),
-                folder_path: $('#current-path').val() 
-            })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            folder_name: $('#folder-name').val(),
+            folder_path: $('#current-path').val() 
+        })
         }).then(function(response) {
             return response.json();
         }).then(function(data) {
@@ -30,6 +36,25 @@ function createNewFolder() {
             showMessage(title, data.message);
         }).catch(error => showMessage(title, error)
     );
+}
+
+function createNewFile() {
+    
+    $('#new-file-dialog').modal('hide'); 
+    const formData = new FormData($('#new-file-form'));
+    
+    // title = "Create File";
+
+    // fetch('http://localhost/api/storage/create_file', {
+    //     method: 'POST',
+    //     body: formData
+    //     }).then(function(response) {
+    //         return response.json();
+    //     }).then(function(data) {
+    //         console.log(data);
+    //         showMessage(title, data.message);
+    //     }).catch(error => showMessage(title, error)
+    // );
 }
 
 function showMessage(title, message) {
