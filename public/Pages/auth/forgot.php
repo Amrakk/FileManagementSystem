@@ -1,3 +1,37 @@
+<?php
+    session_start();
+    if(isset($_SESSION['user_id'])) {
+        header('Location: http:/Home');
+        exit();
+    }
+ 
+    require_once '../../functions.php';
+    $error = '';
+    $email = $_POST['email'] ?? '';
+    if(empty($email)){
+        $error = "Please enter your email address";
+    }
+    else if (!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        $error = "Please enter a valid email address";
+    }else{
+        $url = 'http://localhost/api/auth/forgot';
+        $data = array(
+            'email' => $email
+        );
+        $response = callApi($url, $data, 'POST');
+        if(isset($response['code']) && $response['code'] < 10) {
+            if($response['code'] != 0) {
+                $error = $response['message'];
+            }else
+            $error = $response['message'];
+
+        } else {
+            $error = "There was an error while processing your request. Please try again later";
+        }
+    }
+
+
+?>
 
 <DOCTYPE html>
 <html lang="en">
@@ -26,9 +60,12 @@
                 </div>
                 <div class="form-group">
                     <?php
-                        // if (!empty($error)) {
-                        //     echo "<div class='alert alert-danger'>$error</div>";
-                        // }
+                        if (!empty($error)) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                        else{
+                            echo "<div class='alert alert-success'>$error</div>";
+                        }
                     ?>
                     <button class="btn btn-success px-5">Reset password</button>
                 </div>

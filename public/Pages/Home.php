@@ -1,18 +1,10 @@
 <!-- HOME PAGE
-
     main functions: 
-    -   show all folders, files
-    -   show files/folders info
-    -   create folders
     -   upload files
     -   delete files/folders
     -   download files/folders
     -   share files/folders
     -   rename files/folders
-    -*  move files/folders
-    -*  copy files/folders
-
-
 -->
 <?php
 	session_start();
@@ -24,7 +16,7 @@
    	require_once '../functions.php';
 
 	$user_id = $_SESSION['user_id'];
-	$url = 'http://localhost/api/user/profile?id=' . $user_id;
+	$url = 'http://localhost/api/user/get_profile?id=' . $user_id;
 	$response = callApi($url, null, "GET");
 	if($response['code'] != 0) {
 		session_destroy();
@@ -36,15 +28,24 @@
 	$name = $response['data']['name'];
 	
 	$error = '';
+
 	$dir = $_GET['dir'] ?? '';
-	$storage_root_path = get('STORAGE_PATH') .  '/' . $user_id;
-
-	echo $storage_root_path;
-	$file_list = scandir($storage_root_path . '/' . $dir);
+	$storage_root_path = $user_id;
 	
-	print_r($file_list);
+	$current_path = $storage_root_path . $dir;
 
+	$url = 'http://localhost/api/storage/get_files_folders?path=' . urlencode($current_path);
+	$response = callApi($url, null, "GET");
 
+	$file_list = [];
+	if(isset($response['code']) || $response['code'] >= 10) 
+	{
+		if($response['code'] == 0) $file_list = $response['data'];
+		else $error = $response['message'];
+	} else $error = "There was an error while processing your request. Please try again later";
+
+	print_r($response);
+	$file_contents = loadUserFiles($file_list);
 ?>
 
 <!DOCTYPE html>
@@ -54,10 +55,8 @@
 			<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-			<link 
-				rel="stylesheet"
-				href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
-				integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+			<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" 
+				  integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 			<link rel="stylesheet" href="http://localhost/public/assets/css/home.css">
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -65,7 +64,7 @@
 	
 	</head>
 	<body>
-	<?php require_once('../includes/header.php'); ?>
+	<?php //require_once('../includes/header.php'); ?>
 
 		<div class="container">
 			<div class="row align-items-center py-5">
@@ -73,13 +72,31 @@
 				<h3>File Manager</h3>
 				</div>
 				<div class="col-6">
-				<h5 class="text-right">Xin chào <?= $name ?>, <a class="text-primary" href="auth/logout">Logout</a></h5>
+				<h5 class="text-right">Welcome, <?= $name ?>, <a class="text-primary" href="http://localhost/auth/logout">Logout</a></h5>
+				<input type="hidden" name="user-id" id='user-id' value='<?= $user_id ?>'>
+				<input type="hidden" name="role" id='role' value='<?= $role ?>'>
+				<input type="hidden" name="current-path" id='current-path' value='<?= $current_path ?>'>
 				</div>
 			</div>
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="#">Home</a></li>
-				<li class="breadcrumb-item"><a href="#">Products</a></li>
-				<li class="breadcrumb-item active">Accessories</li>
+				<li class="breadcrumb-item"><a href="?dir=">Home</a></li>
+				<?php 
+					$dirs = explode('/', $dir);
+					$path = '';
+					for($i = 1; $i < count($dirs); $i++) {
+						$path = $path . '/' . $dirs[$i];
+						if($i == count($dirs) - 1) {
+							?>
+								<li class="breadcrumb-item active"><?= $dirs[$i] ?></li>
+							<?php
+						}
+						else {
+							?>
+								<li class="breadcrumb-item"><a href="?dir=<?= $path ?>"><?= $dirs[$i] ?></a></li>
+							<?php
+						}
+					}
+				?>
 			</ol>
 			<div class="input-group mb-3">
 				<div class="input-group-prepend">
@@ -90,10 +107,10 @@
 				<input type="text" class="form-control" placeholder="Search">
 			</div>
 			<div class="btn-group my-3">
-				<button type="button" class="btn btn-light border">
+				<button type="button" class="btn btn-light border" data-toggle="modal" data-target="#new-folder-dialog"> 
 				<i class="fas fa-folder-plus"></i> New folder
 				</button>   
-				<button type="button" class="btn btn-light border">
+				<button type="button" class="btn btn-light border" data-toggle="modal" data-target="#new-file-dialog">
 					<i class="fas fa-file"></i> Create text file
 					</button>  
 			</div>
@@ -108,105 +125,48 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr>
-					<td>
-						<i class="fa fa-folder"></i>
-						<a href="#">Document</a>
-					</td>
-					<td>Folder</td>
-					<td>-</td>
-					<td>02-12-2019</td>
-					<td>
-						<i class="fa fa-download action"></i>
-						<i class="fa fa-edit action" ></i>
-						<i class="fa fa-trash action"></i>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<i class="fa fa-folder"></i>
-						<a href="#">Video</a>
-					</td>
-					<td>Folder</td>
-					<td>-</td>
-					<td>02-12-2019</td>
-					<td>
-						<i class="fa fa-download action"></i>
-						<i class="fa fa-edit action"></i>
-						<i class="fa fa-trash action"></i>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<i class="fa fa-folder"></i>
-						<a href="#">Downloads</a>
-					</td>
-					<td>Folder</td>
-					<td>-</td>
-					<td>02-12-2019</td>
-					<td>
-						<i class="fa fa-download action"></i>
-						<i class="fa fa-edit action"></i>
-						<i class="fa fa-trash action"></i>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<i class="fas fa-file-archive"></i>
-						<a href="#">fontawesome-free-5.15.1-web.zip</a>
-					</td>
-					<td>Compressed file</td>
-					<td>3.5 MB</td>
-					<td>02-07-2020</td>
-					<td>
-						<i class="fa fa-download action"></i>
-						<i class="fa fa-edit action"></i>
-						<i class="fa fa-trash action"></i>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<i class="fas fa-file"></i>
-						<a href="#">Account.txt</a>
-					</td>
-					<td>Text Document</td>
-					<td>18 KB</td>
-					<td>11-02-2020</td>
-					<td>
-						<i class="fa fa-download action"></i>
-						<i class="fa fa-edit action"></i>
-						<i class="fa fa-trash action"></i>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<i class="fas fa-file-image"></i>
-						<a href="#">img101.png</a>            
-					</td>
-					<td>JPG Image</td>
-					<td>2.2 MB</td>
-					<td>11-02-2020</td>
-					<td>
-						<i class="fa fa-download action"></i>
-						<i class="fa fa-edit action"></i>
-						<i class="fa fa-trash action"></i>
-					</td>
-				</tr>
+					<?php 
+						if(gettype($file_contents) == 'string') echo '<tr><td>' . $file_contents . '</td></tr>'; // show dialog for file contents
+						else 
+						{
+							foreach($file_contents as $file) 
+							{
+								$path = $dir . '/' . $file['name'];
+								?>
+									<tr>
+									<td>
+										<i class="<?= $file['icon'] ?>"></i>
+										<a href="?dir=<?= $path ?>"><?= $file['name'] ?></a>
+									</td>
+									<td><?= $file['type'] ?></td>
+									<td><?= $file['size'] ?></td>
+									<td><?= $file['modified_date'] ?></td>
+									<td>
+										<i class="fa fa-download action"></i>
+										<i class="fa fa-edit action" ></i>
+										<i class="fa fa-trash action"></i>
+									</td>
+									</tr>
+								<?php
+							}
+						}
+					?>
 				</tbody>
 			</table>
+
 			<div class="border rounded mb-3 mt-5 p-3">
 				<h4>File upload</h4>
-				<form>
+				<form id="upload-form"enctype="multipart/form-data">
 				<div class="form-group">
 					<div class="custom-file">
-						<input type="file" class="custom-file-input" id="customFile">
+						<input type="file" class="custom-file-input" id="customFile" multiple>
 						<label class="custom-file-label" for="customFile">Choose file</label>            
 					</div>
 				</div>
 				<p>Người dùng chỉ được upload tập tin có kích thước tối đa là 20 MB.</p>
 				<p>Các tập tin thực thi (*.exe, *.msi, *.sh) không được phép upload.</p>
 				<p><strong>Yêu cầu nâng cao</strong>: hiển thị progress bar trong quá trình upload.</p>
-				<button class="btn btn-success px-5">Upload</button>
+				<button class="btn btn-success px-5" id="upload-btn">Upload</button>
 				</form>
 			</div>
 
@@ -226,101 +186,128 @@
 
 		<!-- Delete dialog -->
 		<div class="modal fade" id="confirm-delete">
-			<div class="modal-dialog">
-			<div class="modal-content">
+		<div class="modal-dialog">
+		<div class="modal-content">
 			
-				<div class="modal-header">
-				<h4 class="modal-title">Xóa tập tin</h4>
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-
-				<div class="modal-body">
-				Bạn có chắc rằng muốn xóa tập tin <strong>image.jpg</strong>
-				</div>
-			
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger" data-dismiss="modal">Xóa</button>
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Không</button>
-				</div>            
-				</div>
+			<div class="modal-header">
+			<h4 class="modal-title">Xóa tập tin</h4>
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
+
+			<div class="modal-body">
+			Bạn có chắc rằng muốn xóa tập tin <strong>image.jpg</strong>
+			</div>
+		
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Xóa</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Không</button>
+			</div>            
+		</div>	
+		</div>
 		</div>
 
 
 		<!-- Rename dialog -->
 		<div class="modal fade" id="confirm-rename">
-			<div class="modal-dialog">
-			<div class="modal-content">
-			
-				<div class="modal-header">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
 				<h4 class="modal-title">Đổi tên</h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-
-				<div class="modal-body">
-					<p>Nhập tên mới cho tập tin <strong>Document.txt</strong></p>
-					<input type="text" placeholder="Nhập tên mới" value="Document.txt" class="form-control"/>
-				</div>
-			
-				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">Lưu</button>
-				</div>            
-				</div>
-			</div>
 			</div>
 
-			<!-- New file dialog -->
-			<div class="modal fade" id="new-file-dialog">
-			<div class="modal-dialog">
-			<div class="modal-content">
-			
-				<div class="modal-header">
-				<h4 class="modal-title">Tạo tập tin mới</h4>
+			<div class="modal-body">
+				<p>Nhập tên mới cho tập tin <strong>Document.txt</strong></p>
+				<input type="text" placeholder="Nhập tên mới" value="Document.txt" class="form-control"/>
+			</div>
+		
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Lưu</button>
+			</div>            
+		</div>
+		</div>
+		</div>
+
+		<!-- New folder dialog -->
+		<div class="modal fade" id="new-folder-dialog">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Create new folder</h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="name">Folder Name</label>
+					<input name="folder-name" type="text" placeholder="Folder name" class="form-control" id="folder-name"/>
+				</div>
+			</div>
+		
+			<div class="modal-footer">
+				<button type="button" class="btn btn-success" id="create-folder-btn">Save</button>
+			</div>    
+		</div>
+		</div>
+		</div>
+
+
+		<!-- New file dialog -->
+		<div class="modal fade" id="new-file-dialog">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<form action="" method="post">
+				<div class="modal-header">
+					<h4 class="modal-title">Create new file</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
 				<div class="modal-body">
 					<div class="form-group">
 						<label for="name">File Name</label>
-						<input type="text" placeholder="File name" class="form-control" id="name"/>
+						<input name="file-name"type="text" placeholder="File name" class="form-control" id="file-name"/>
 					</div>
 					<div class="form-group">
-						<label for="content">Nội dung</label>
-						<textarea rows="10" id="content" class="form-control" placeholder="Nội dung"></textarea>
+						<label for="content">Contents</label>
+						<textarea name="contents" rows="10" id="contents" class="form-control" placeholder="Contents"></textarea>
 
 					</div>
 				</div>
 			
 				<div class="modal-footer">
-					<button type="button" class="btn btn-success" data-dismiss="modal">Lưu</button>
-				</div>            
-				</div>
+					<input type="hidden" name="action" value="create-file"></input>
+					<input type="hidden" name="path" value="<?= $dir ?>"></input>
+					<button type="button" class="btn btn-success" id="create-file-btn">Save</button>
+				</div>    
+			</form>  
+		</div>
+		</div>
+		</div>
+
+		<!-- Message dialog -->
+		<div class="modal fade" id="message-dialog">
+		<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="message-title">Title</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
+
+			<div class="modal-body" id="message-body">
+				<p>Message</p>
 			</div>
-
-
-
-			<!-- message dialog -->
-			<div class="modal fade" id="message-dialog">
-				<div class="modal-dialog">
-				<div class="modal-content">
-				
-					<div class="modal-header">
-					<h4 class="modal-title">Xóa file</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					</div>
 		
-					<div class="modal-body">
-						<p>Bạn không được cấp quyền để xóa tập tin/thư mục này</p>
-					</div>
-				
-					<div class="modal-footer">
-						<button type="button" class="btn btn-info" data-dismiss="modal">Đóng</button>
-					</div>            
-					</div>
-				</div>
-				</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+			</div>            
+		</div>
+		</div>
+		</div>
 
-	<script src="public/assets/js/home.js"></script>
+
+
+
+
+	<script src="http://localhost/public/assets/js/home.js"></script>
 	</body>
 </html>

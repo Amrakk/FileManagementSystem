@@ -37,12 +37,26 @@
             return $profiles;
         }
 
-        public static function getProfile($id)
+        public static function getProfileByID($id)
         {
             $conn = new Database();
             $query = "SELECT * FROM profile WHERE id = :id";
             $params = [
                 'id' => $id
+            ];
+
+            $data = $conn->selectQuery($query, $params)[0] ?? null;
+            if(empty($data)) return null;
+
+            $profile = new Profile($data['id'], $data['name'], $data['email'], $data['phone_number'], $data['role']);
+            return $profile;
+        }
+
+        public static function getProfileByEmail($email){
+            $conn = new Database();
+            $query = "SELECT * FROM profile WHERE email = :email";
+            $params = [
+                'email' => $email
             ];
 
             $data = $conn->selectQuery($query, $params)[0] ?? null;
@@ -107,39 +121,27 @@
             return ($data == null) ? false : true;
         }
 
-        public function getId() {
-            return $this->id;
-        }
-
-        public function getName() {
-            return $this->name;
-        }
         
+        public function getId() { return $this->id; }
+        public function getName() { return $this->name; }
+        public function getEmail() { return $this->email; }
+        public function getPhone_number() { return $this->phone_number; }
+        public function getRole() { return $this->role; }
+        
+
         public function setName($name): self {
             $this->name = $name;
             return $this;
         }
-        
-        public function getEmail() {
-            return $this->email;
-        }
-
+    
         public function setEmail($email): self {
             $this->email = $email;
             return $this;
         }
 
-        public function getPhone_number() {
-            return $this->phone_number;
-        }
-        
         public function setPhone_number($phone_number): self {
             $this->phone_number = $phone_number;
             return $this;
-        }
-        
-        public function getRole() {
-            return $this->role;
         }
         
         public function setRole($role): self {

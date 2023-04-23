@@ -25,8 +25,8 @@ function validateInput() {
     } else if (password == "") {
         showMessage("Please enter your password");
         return false;
-    } else if (password.length < 8 || password.length > 20) {
-        showMessage("Password must be between 8 and 20 characters");
+    } else if (password.length < 6 || password.length > 20) {
+        showMessage("Password must be between 6 and 20 characters");
         return false;
     } else if (password_confirmation == "") {
         showMessage("Please confirm your password");
