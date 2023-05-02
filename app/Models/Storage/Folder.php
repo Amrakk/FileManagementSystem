@@ -1,5 +1,6 @@
 <?php
     namespace App\Models\Storage;
+    
 
     class Folder
     {
@@ -41,12 +42,38 @@
             ];
         }
 
+        public function createZipArchive() 
+        {
+            $zip = new \ZipArchive();
+            $zip_file = tempnam(sys_get_temp_dir(), 'zip_');
+            
+            if ($zip->open($zip_file, \ZipArchive::CREATE) === TRUE) {
+                $dir = $this->path;
+                $iterator = new \RecursiveDirectoryIterator($dir);
+
+                foreach ($iterator as $file_path) {
+                    if (!is_dir($file_path)) {
+                        $filePath = realpath($file_path);
+                        $relativePath = substr($filePath, strlen($dir) + 1);
+                        $zip->addFile($filePath, $relativePath);
+                    } else {
+                        $zip->addEmptyDir($iterator->getSubPathName());
+                    }
+                }
+
+                $zip->close();
+
+                return [
+                    'path' => $zip_file,
+                    'name' => $this->name . '.zip',
+                    'type' => 'application/zip'
+                ];
+            } else {
+                return null;
+            }
+        }
+
         
-
-
-
-
-
         // Getters and Setters
 
         public function getName() { return $this->name; }

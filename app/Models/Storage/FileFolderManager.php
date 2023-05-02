@@ -49,12 +49,12 @@
             return $total_size;
         }
 
-        public function getFiles()
+        public function getFileList()
         {
             return $this->getFileOrFolder('file');
         }
 
-        public function getFolders()
+        public function getFolderList()
         {
             return $this->getFileOrFolder('folder');
         }
@@ -79,6 +79,8 @@
             });
         }
 
+        // Static methods
+
         public static function createFolder($path, $folder_name)
         {
             $folder_path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $folder_name;
@@ -100,23 +102,40 @@
             return false;
         }
 
-        
+        public static function deleteFileFolder($path)
+        {
+            if (is_dir($path)) {
+                $files = glob(rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '*');
+                foreach ($files as $file) { self::deleteFileFolder($file); }
+                return rmdir($path);
+            } 
+            return unlink($path);
+        }
 
-        // public function addFileOrFolder() {
+        public static function renameFileFolder($path, $new_name)
+        {
+            if (is_file($path)) 
+                $new_path = dirname($path) . DIRECTORY_SEPARATOR . $new_name . '.' . pathinfo($path, PATHINFO_EXTENSION);
+            else 
+                $new_path = dirname($path) . DIRECTORY_SEPARATOR . $new_name;
+            return rename($path, $new_path);
+        }
 
-            
-        // }
-    
-        // public function removeFileOrFolder($file_folder) {
-        //     $index = array_search($file_folder, $this->files_folders);
-        //     if ($index !== false) {
-        //         array_splice($this->files_folders, $index, 1);
-        //     }
-        // }]
-
-
-
-        // Static methods
+        public static function downloadFileFolder($full_path)
+        {
+            $type = self::fileOrFolder($full_path);
+            if($type == 'file')
+                return array(
+                    'path' => $full_path,
+                    'name' => pathinfo($full_path, PATHINFO_FILENAME) . '.' . pathinfo($full_path, PATHINFO_EXTENSION),
+                    'type' => finfo_file(finfo_open(FILEINFO_MIME_TYPE), $full_path)
+                );
+            else if($type == 'folder') {
+                $folder = new Folder($full_path);
+                return $folder->createZipArchive();
+            }
+            return null;
+        }
 
         public static function fileOrFolder($path) {
             if(!file_exists($path))
@@ -124,37 +143,26 @@
             return is_file($path) ? 'file' : 'folder';
         }
 
+        public function uploadFiles($files, $allow_extension) {
+            $uploaded_files = [];
+            for($i = 0; $i < count($files['name']); $i++) {
+                $file_extension = pathinfo($files['name'][$i], PATHINFO_EXTENSION);
+                if (in_array($file_extension, $allow_extension)) {
+                    $file_path = rtrim($this->current_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $files['name'][$i];
+                    if (!file_exists($file_path)) {
+                        move_uploaded_file($files['tmp_name'][$i], $file_path);
+                        $uploaded_files[] = $files['name'][$i];
+                    }
+                }
+            }
+            
+            return $uploaded_files;
+        }
+
 
         
-        // Tmp methods
-
-        // public function create_folder($folder_id, $name, $size, $path, $modified_date, $owner_id) {
-        //     $folder = new Folder($folder_id, $name, $size, $path, $modified_date, $owner_id);
-        //     array_push($this->folders, $folder);
-        //     return $folder;
-        // }
-
-        // public function create_file($file_id, $name, $size, $path, $modified_date, $extension, $owner_id) {
-        //     $file = new File($file_id, $name, $size, $path, $modified_date, $extension, $owner_id);
-        //     array_push($this->files, $file);
-        //     return $file;
-        // }
-
-        // public function add_file_to_folder($file, $folder) {
-        //     $folder->add_file($file);
-        // }
-
-        // public function remove_file_from_folder($file, $folder) {
-        //     $folder->remove_file($file);
-        // }
-
-        // public function get_files_in_folder($folder) {
-        //     return $folder->files;
-        // }
-
         // Getters and setters
         public function getContents() { 
-
             return $this->contents; 
         }
 

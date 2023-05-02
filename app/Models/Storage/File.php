@@ -20,6 +20,13 @@
 
 
         public function getData() {
+            header('Content-Type: '. finfo_file(finfo_open(FILEINFO_MIME_TYPE), $this->path));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('X-Content-Type-Options: nosniff');
+
             return file_get_contents($this->path);
         }
 
@@ -33,14 +40,9 @@
             );
         }
 
-        public function modify($data) {
-            return file_put_contents($this->path, $data);
+        public function getFile() {
+            return readfile($this->path);
         }
-
-       
-
-
-
         
         // Getters and Setters
 
@@ -78,7 +80,5 @@
         }
 
     }
-
-
 
 ?>
