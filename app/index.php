@@ -48,17 +48,17 @@
     }
     else if($category == 'storage') 
     {
-        if($action == 'get_files_folders') echo StorageController::getFilesFolders($params[0]['path'] ?? '');
+        if($action == 'get_files_folders') print_r(StorageController::getFilesFolders($params[0]['path'] ?? ''));
         else if($action == 'create_folder') echo StorageController::createFolder($data->folder_path, $data->folder_name);
-        else if($action == 'create_file') echo 1;//StorageController::createFile($data->file_path, $data->file_name, $data->contents);
-        // else if($action == 'upload_file') echo HomeController::uploadFile($params[0]['id'], $params[1]['file_name']);
-        // else if($action == 'delete_file') echo HomeController::deleteFile($params[0]['id'], $params[1]['file_name']);
-        // else if($action == 'get_files') echo HomeController::getFiles($params[0]['id']);
+        else if($action == 'create_file') echo StorageController::createFile($_POST['current-path'] ?? '', $_POST['file-name'] ?? '', $_POST['file-contents'] ?? '');
+        else if($action == 'delete_file_folder') echo StorageController::deleteFileFolder($data->path);
+        else if($action == 'rename_file_folder') echo StorageController::renameFileFolder($data->path, $data->new_name);
+        else if($action == 'download_file_folder') echo StorageController::downloadFileFolder($data->path);
+        else if($action == 'upload_file_folder') echo StorageController::uploadFiles($_POST['path'], $_FILES['files']);
 
         else echo json_encode(array('code' => 20, 'message' => 'Invalid action or request method is not supported'));
     }
     else echo json_encode(array('code' => 20, 'message' => 'Invalid action or request method is not supported'));
     
-
     exit();
 ?>

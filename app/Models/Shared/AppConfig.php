@@ -13,5 +13,11 @@ namespace App\Models\Shared;
 
             return !empty(self::$app_config[$key])?self::$app_config[$key]:$default;
         }
+
+        public static function getExt()
+        {
+            $allowedExt = self::get('ALLOWED_FILE_EXTENSIONS');
+            return array_values(array_merge(...array_values($allowedExt)));
+        }
     }
 ?>
